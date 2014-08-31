@@ -57,7 +57,7 @@ namespace std {
     } ;
 }
 
-std::wostream& operator<<(std::wostream& os, const maze::Point& p) noexcept {
+inline std::wostream& operator<<(std::wostream& os, const maze::Point& p) noexcept {
     os << "(" << p.x << ", " << p.y << ")";
     return os;
 }
