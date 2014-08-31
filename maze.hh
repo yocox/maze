@@ -226,7 +226,10 @@ class Maze {
         return true;
     }
 
-    void random_shuffle() {
+    void random_shuffle(const bool print_progress = false) {
+        if(print_progress)
+            std::wcout << L"initializing random shuffle..." << std::endl;
+
         std::vector<Point> ps;
         ps.reserve(w_ * h_);
         for(int x = 1; x < w_ + 1; ++x) {
@@ -234,10 +237,18 @@ class Maze {
                 ps.emplace_back(x, y);
             }
         }
+
         std::random_shuffle(ps.begin(), ps.end());
         for(int i = 0; i < w_ * h_; ++i) {
+            if(print_progress) {
+                std::wcout << L"random shuffling... " << (i + 1) * 100 / (w_ * h_) << L"%\r";
+                std::wcout.flush();
+            }
             switch_path(ps[i]);
         }
+
+        if(print_progress)
+            std::wcout << std::endl;
     }
 
     void save_img(const std::string& filename, const int CELL_SIZE = 6) {
