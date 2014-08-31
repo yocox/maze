@@ -268,6 +268,8 @@ class Maze {
         for(int i = 0; i < w_ + 1; ++i) {
             im.draw_line(i * CELL_SIZE, 0, i * CELL_SIZE, TOTAL_HEIGHT, black);
         }
+        im.draw_line(0 * CELL_SIZE + 1, 0 * CELL_SIZE, (0 + 1) * CELL_SIZE - 1, 0 * CELL_SIZE, white);
+        im.draw_line((w_ - 1) * CELL_SIZE + 1, h_ * CELL_SIZE, w_ * CELL_SIZE - 1, h_ * CELL_SIZE, white);
 
         for(int x = 0; x < w_; ++x) {
             for(int y = 0; y < h_; ++y) {
@@ -298,6 +300,8 @@ class Maze {
             }
             cur.to(m_[cur.x][cur.y]);
         }
+        im.draw_line(CELL_SIZE_2, CELL_SIZE_2, CELL_SIZE_2, 0, pink);
+        im.draw_line(w_ * CELL_SIZE - CELL_SIZE_2, h_ * CELL_SIZE - CELL_SIZE_2, w_ * CELL_SIZE - CELL_SIZE_2, (h_ + 1) * CELL_SIZE - CELL_SIZE_2, pink);
 
         oss.str("");
         oss << filename << "_" << w_ << "x" << h_ << "_solution.png";
