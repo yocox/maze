@@ -251,7 +251,7 @@ class Maze {
             std::wcout << std::endl;
     }
 
-    void save_img(const std::string& filename, const int CELL_SIZE = 6) {
+    void save_img(const std::string& filename, const bool write_solution, const int CELL_SIZE = 6) {
         const int CELL_SIZE_2 = CELL_SIZE / 2;
         const unsigned char pink[] = {255, 100, 100};
         const unsigned char white[] = {255, 255, 255};
@@ -286,6 +286,9 @@ class Maze {
         std::ostringstream oss;
         oss << filename << "_" << w_ << "x" << h_ << ".png";
         im.save(oss.str().c_str());
+
+        if(!write_solution)
+            return;
 
         Point cur{w_, h_};
         while(cur.x != 1 || cur.y != 1) {
