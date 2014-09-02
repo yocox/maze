@@ -71,7 +71,7 @@ class Maze {
       , h_(h)
       , m_(w_ + 2, std::vector<D>(h_ + 2, D::NONE))
     {
-        init();
+        init0();
     }
 
     void init() noexcept {
@@ -82,6 +82,112 @@ class Maze {
             }
         }
         m_[1][1] = D::NONE;
+    }
+
+    void init0() noexcept {
+        /*
+         *   0 1 2 3 4 5
+         * 0 @-@-@-@-@-@
+         *   | | | | | |  (w - 1) * h
+         * 1 @-@-@-@-@-@
+         *   | | | | | |
+         * 2 @-@-@-@-@-@
+         *   | | | | | |
+         * 3 @-@-@-@-@-@
+         */
+        std::vector<int> parent_indexes(w_ * h_);
+        for(int i = 0; i < w_ * h_; ++i) {
+            parent_indexes[i] = i;
+        }
+
+        const int num_all_edge = (w_ - 1) * h_ + w_ * (h_ - 1);
+        std::vector<int> edges(num_all_edge);
+        for(int i = 0; i < num_all_edge; ++i) {
+            edges[i] = i;
+        }
+        std::random_shuffle(edges.begin(), edges.end());
+
+        int count  = 0;
+        for(int edge : edges) {
+            int x0;
+            int y0;
+            int x1;
+            int y1;
+            bool is_hori = edge < (w_ - 1) * h_;
+            if(is_hori) {
+                x0 = edge % (w_ - 1) + 1;
+                y0 = edge / (w_ - 1) + 1;
+                x1 = x0 + 1;
+                y1 = y0;
+            } else {
+                edge -= (w_ - 1) * h_;
+                x0 = edge % w_ + 1;
+                y0 = edge / w_ + 1;
+                x1 = x0;
+                y1 = y0 + 1;
+            }
+
+            if(m_[x0][y0] != D::NONE && m_[x1][y1] != D::NONE)
+                continue;
+
+            auto root_of = [&parent_indexes](int ker) -> int {
+                int c = ker;
+                std::vector<int> path;
+                while(parent_indexes[c] != c) {
+                    path.push_back(c);
+                    c = parent_indexes[c];
+                }
+                int root = c;
+                for(int _ : path) {
+                    parent_indexes[_] = root;
+                }
+                return root;
+            };
+
+            int root0 = root_of((y0 - 1) * w_ + (x0 - 1));
+            int root1 = root_of((y1 - 1) * w_ + (x1 - 1));
+
+            if(root0 == root1) {
+                continue;
+            }
+
+            if(root0 < root1) {
+                parent_indexes[root1] = parent_indexes[root0];
+            } else {
+                parent_indexes[root0] = parent_indexes[root1];
+            }
+
+            if(is_hori) {
+                if(m_[x0][y0] == D::NONE && m_[x1][y1] != D::NONE) {
+                    m_[x0][y0] = D::RIGHT;
+                } else if(m_[x0][y0] != D::NONE && m_[x1][y1] == D::NONE) {
+                    m_[x1][y1] = D::LEFT;
+                } else {
+                    if(rand() % 2) {
+                        m_[x0][y0] = D::RIGHT;
+                    } else {
+                        m_[x1][y1] = D::LEFT;
+                    }
+                }
+            } else {
+                if(m_[x0][y0] == D::NONE && m_[x1][y1] != D::NONE) {
+                    m_[x0][y0] = D::DOWN;
+                } else if(m_[x0][y0] != D::NONE && m_[x1][y1] == D::NONE) {
+                    m_[x1][y1] = D::UP;
+                } else {
+                    if(rand() % 2) {
+                        m_[x0][y0] = D::DOWN;
+                    } else {
+                        m_[x1][y1] = D::UP;
+                    }
+                }
+            }
+            count++;
+            std::wcout << count << std::endl;
+            if(count == w_ * h_ - 1) {
+                return;
+            }
+        }
     }
 
     void print(std::wostream& os = std::wcout) noexcept {
