@@ -5,7 +5,8 @@
 
 int main(int, char* argv[]) noexcept {
     std::cout << "start" << std::endl;
-    srand(time(NULL));
+    // srand(time(NULL));
+    srand(3);
     Maze m(std::stoi(argv[1]), std::stoi(argv[2]));
     std::cout << "start" << std::endl;
     m.generate();

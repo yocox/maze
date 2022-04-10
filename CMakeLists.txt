@@ -1,1 +1,2 @@
-add_executable(a.exe test.cc)
+project(MazeGenerator)
+add_executable(a test.cc)

@@ -33,7 +33,12 @@ public:
     
     void generate() {
         a[0][0].state = CellState::TREE;
-
+        for (int64_t x = 0; x < w_; ++x) {
+            for (int64_t y = 0; y < w_; ++y) {
+                loopCancleRandomWork({1, 0});
+                print("Random walk");
+            }
+        }
     }
     
     Dir randomNextDir(const Point& curPos, Dir prevDir) {
@@ -44,23 +49,25 @@ public:
                 if (prevDir == Dir::RIGHT || curPos.x == 0) continue;
                 break;
             case Dir::UP:
-                if (prevDir == Dir::RIGHT || curPos.x == 0) continue;
+                if (prevDir == Dir::DOWN || curPos.y == 0) continue;
                 break;
             case Dir::RIGHT:
-                if (prevDir == Dir::RIGHT || curPos.x == 0) continue;
+                if (prevDir == Dir::LEFT || curPos.x == w_ - 1) continue;
                 break;
             case Dir::DOWN:
-                if (prevDir == Dir::RIGHT || curPos.x == 0) continue;
+                if (prevDir == Dir::UP || curPos.y == h_ - 1) continue;
                 break;
             case Dir::NONE:
                 assert(0 && "unreachable");
-        
-            
             }
+            return d;
         };
     }
-
-    void loop_cancle_random_work(const Point& start) {
+    
+    void loopCancleRandomWork(const Point& start) {
+        if (a[start.x][start.y].state != CellState::NONE) {
+            return;
+        }
         Point curPos = start;
         Dir prevDir = Dir::NONE;
         while(true) {
@@ -80,16 +87,42 @@ public:
                 while (true) {
                     Point parentPos = curPos;
                     switch(a[curPos.x][curPos.y].parent) {
-                    case Dir::LEFT :a[curPos.x][curPos.y].parent = treeParentDir; a[curPos.x][curPos.y].state = CellState::TREE; --curPos.x; treeParentDir = Dir::RIGHT; break;
-                    case Dir::UP   :a[curPos.x][curPos.y].parent = treeParentDir; a[curPos.x][curPos.y].state = CellState::TREE; --curPos.y; treeParentDir = Dir::DOWN ; break;
-                    case Dir::RIGHT:a[curPos.x][curPos.y].parent = treeParentDir; a[curPos.x][curPos.y].state = CellState::TREE; ++curPos.x; treeParentDir = Dir::LEFT ; break;
-                    case Dir::DOWN :a[curPos.x][curPos.y].parent = treeParentDir; a[curPos.x][curPos.y].state = CellState::TREE; ++curPos.y; treeParentDir = Dir::UP   ; break;
-                    case Dir::NONE : exit(1); break;
-                    }
-                    if (curPos == start) {
+                    case Dir::LEFT :
+                        a[curPos.x][curPos.y].parent = treeParentDir;
+                        a[curPos.x][curPos.y].state = CellState::TREE;
+                        if (curPos == start) return;
+                        --curPos.x;
+                        treeParentDir = Dir::RIGHT;
+                        break;
+                    case Dir::UP   :
+                        a[curPos.x][curPos.y].parent = treeParentDir;
+                        a[curPos.x][curPos.y].state = CellState::TREE;
+                        if (curPos == start) return;
+                        --curPos.y;
+                        treeParentDir = Dir::DOWN ;
+                        break;
+                    case Dir::RIGHT:
+                        a[curPos.x][curPos.y].parent = treeParentDir;
+                        a[curPos.x][curPos.y].state = CellState::TREE;
+                        if (curPos == start) return;
+                        ++curPos.x;
+                        treeParentDir = Dir::LEFT ;
+                        break;
+                    case Dir::DOWN:
+                        a[curPos.x][curPos.y].parent = treeParentDir;
+                        a[curPos.x][curPos.y].state = CellState::TREE;
+                        if (curPos == start) return;
+                        ++curPos.y;
+                        treeParentDir = Dir::UP   ;
+                        break;
+                    case Dir::NONE :
+                        a[curPos.x][curPos.y].parent = treeParentDir;
+                        a[curPos.x][curPos.y].state = CellState::TREE;
+                        if (curPos == start) return;
                         break;
                     }
                 }
+                return;
             }
             
             // If next cell is path, cancle the loop, and continue the random walk
@@ -126,6 +159,18 @@ public:
                 break;
             }
         }
+    }
+
+    void print(const std::string& title) const {
+        std::cout << "======" << title << "======\n";
+        constexpr char c[5] = {'_', '<', '^', '>', 'v'};
+        for (int64_t y = 0; y < h_; ++y) {
+            for (int64_t x = 0; x < w_; ++x) {
+                std::cout << c[static_cast<int>(a[x][y].parent)];
+            }
+            std::cout << std::endl;
+        }
+        std::cout << "=====================\n";
     }
 
 private:
