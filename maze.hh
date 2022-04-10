@@ -34,6 +34,7 @@ struct Point {
             case D::RIGHT: return Point(x - 1, y    ); break;
             case D::DOWN : return Point(x    , y + 1); break;
         }
+        return Point{0, 0};
     }
     Point to(const D d) noexcept {
         switch(d) {
@@ -43,6 +44,7 @@ struct Point {
             case D::RIGHT: ++x; return *this; break;
             case D::DOWN : ++y; return *this; break;
         }
+        return Point{0, 0};
     }
 } ;
 
@@ -284,7 +286,7 @@ class Maze {
         }
 
         std::ostringstream oss;
-        oss << filename << "_" << w_ << "x" << h_ << ".png";
+        oss << filename << "_" << w_ << "x" << h_ << ".bmp";
         im.save(oss.str().c_str());
 
         if(!write_solution)
