@@ -1,6 +1,7 @@
 #include <vector>
 #include <cassert>
 #include <iostream>
+#include <random>
 
 enum class CellState {
     NONE, PATH, TREE
@@ -44,7 +45,8 @@ public:
         : w_{w}
         , h_{h}
         , a(w, std::vector<Cell>(h))
-    {}
+    {
+    }
     
     void generate() {
         a[0][0].state = CellState::TREE;
@@ -58,7 +60,7 @@ public:
     
     Dir randomNextDir(const Point& curPos, Dir prevDir) {
         while (true) {
-            Dir d = static_cast<Dir>(rand() % 4 + 1);
+            Dir d = static_cast<Dir>(randDir());
             switch (d) {
             case Dir::LEFT:
                 if (prevDir == Dir::RIGHT || curPos.x == 0) continue;
@@ -228,7 +230,7 @@ public:
                 break;
             }
         }
-        std::cout << "cancle " << count << " cells" << std::endl;
+        //std::cout << "cancle " << count << " cells" << std::endl;
     }
 
     void print(const std::string& title) const {
@@ -251,8 +253,15 @@ public:
         std::cout << "=====================\n";
     }
 
+    std::uniform_int_distribution<>::result_type randDir() {
+        return dirDist_(gen_);
+    }
+
 private:
     int64_t w_;
     int64_t h_;
     std::vector<std::vector<Cell>> a;
+    std::random_device rd;  //Will be used to obtain a seed for the random number engine
+    std::mt19937 gen_{rd()}; //Standard mersenne_twister_engine seeded with rd()
+    std::uniform_int_distribution<> dirDist_{1, 4};
 };
