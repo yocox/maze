@@ -1,8 +1,8 @@
-a.out: test.cc maze.hh
-	g++ -O3 -std=c++11 test.cc -lX11 -lpthread -o a.out 
+a.exe: test.cc maze.hh
+	g++ -g -std=c++11 test.cc -lpthread -lgdi32 -o a.exe -IC:\lib\CImg-3.1.0_pre040122
 
-g: a.out
-	cgdb ./a.out
+g: a.exe
+	cgdb ./a.exe
 
-r: a.out
-	./a.out 300 180
+r: a.exe
+	./a.out 640 480
