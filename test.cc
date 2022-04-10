@@ -18,5 +18,6 @@ int main(int argc, char* argv[]) noexcept {
     std::cout << "start" << std::endl;
     m.generate();
     std::cout << "done" << std::endl;
+    //m.print("Result");
     //m.save_img("maze", false, 4);
 }

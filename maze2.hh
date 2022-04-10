@@ -145,7 +145,7 @@ public:
             exit(1);
             break;
         }
-        print("After step");
+        //print("After step");
         curPos = nextPos;
         prevDir = nextDir;
     }
@@ -168,18 +168,18 @@ public:
             case Dir::NONE : assert(0 && "unreachable [1]"); exit(1); break;
             }
             
-            std::cout << "Current Pos: " << curPos << " nextDir:" << nextDir;
+            // std::cout << "Current Pos: " << curPos << " nextDir:" << nextDir;
             // If next cell is tree, end the work, reverse the dir on the path to connect to the tree
             if (a[nextPos.x][nextPos.y].state == CellState::TREE) {
-                std::cout << "  Add to tree" << std::endl;
+                // std::cout << "  Add to tree" << std::endl;
                 addToTree(nextDir, curPos, start);
-                print("Added to tree");
+                //print("Added to tree");
                 return;
             }
             
             // If next cell is path, cancle the loop, and continue the random walk
             else if (a[nextPos.x][nextPos.y].state == CellState::PATH) {
-                std::cout << "  cancle loop" << std::endl;
+                // std::cout << "  cancle loop" << std::endl;
                 cancleLoop(curPos, nextPos);
                 curPos = nextPos;
                 continue;
@@ -187,13 +187,14 @@ public:
             
             // If next cell is empty cell, work on
             else {
-                std::cout << "  step" << std::endl;
+                // std::cout << "  step" << std::endl;
                 randomWalkOneStep(curPos, nextPos, prevDir, nextDir);
             }
         }
     }
     
     void cancleLoop(const Point& from, const Point& to) {
+        int count = 0;
         Point cur = from;
         while(true) {
             switch(a[cur.x][cur.y].parent) {
@@ -221,11 +222,13 @@ public:
                 a[cur.x][cur.y].parent = Dir::NONE;
                 break;
             };
-            print("After cancle one cell");
+            //print("After cancle one cell");
+            ++count;
             if (cur == to) {
                 break;
             }
         }
+        std::cout << "cancle " << count << " cells" << std::endl;
     }
 
     void print(const std::string& title) const {
@@ -234,14 +237,14 @@ public:
         constexpr char STACH[5] = {'_', 'P', 'T'};
         for (int64_t y = 0; y < h_; ++y) {
             for (int64_t x = 0; x < w_; ++x) {
-              std::cout << DIRCH[static_cast<int>(a[x][y].parent)];
+                std::cout << DIRCH[static_cast<int>(a[x][y].parent)];
             }
             std::cout << std::endl;
         }
         std::cout << "---------------------\n";
         for (int64_t y = 0; y < h_; ++y) {
             for (int64_t x = 0; x < w_; ++x) {
-              std::cout << STACH[static_cast<int>(a[x][y].state)];
+                std::cout << STACH[static_cast<int>(a[x][y].state)];
             }
             std::cout << std::endl;
         }
