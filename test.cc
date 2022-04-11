@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string>
-#include "maze2.hh"
+#include "maze.hh"
 #include "draw.hh"
 
 int main(int argc, char* argv[]) noexcept {
