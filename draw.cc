@@ -2,7 +2,7 @@
 #include <vector>
 #include <sstream>
 
-#include <CImg.h>
+#include "CImg.h"
 #include "types.hh"
 
 void draw(const Cells& cells, const std::string& filename, const bool write_solution, const int CELL_SIZE = 6) {
@@ -54,20 +54,34 @@ void draw(const Cells& cells, const std::string& filename, const bool write_solu
     if(!write_solution)
         return;
 
+    
+    auto hsv = cimg_library::CImg<unsigned char>::HSV_LUT256();
+    unsigned char color[3] = {};
+    auto setColor = [&](unsigned char idx) {
+        color[0] = hsv(idx, 0, 0);
+        color[1] = hsv(idx, 0, 1);
+        color[2] = hsv(idx, 0, 2);
+    };
+    unsigned colorIdx = 0;
+    setColor(colorIdx);
+    mazeim.draw_line(CELL_SIZE_2, CELL_SIZE_2, CELL_SIZE_2, 0, color);
     Point cur{w - 1, h - 1};
     while(cur.x != 0 || cur.y != 0) {
         int x = cur.x;
         int y = cur.y;
+        ++colorIdx;
+        setColor(colorIdx);
         switch(cells[cur.x][cur.y].parent) {
-            case Dir::LEFT : mazeim.draw_line((x + 1) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, (x    ) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, pink); break;
-            case Dir::UP   : mazeim.draw_line((x + 1) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, (x + 1) * CELL_SIZE - CELL_SIZE_2, (y    ) * CELL_SIZE - CELL_SIZE_2, pink); break;
-            case Dir::RIGHT: mazeim.draw_line((x + 1) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, (x + 2) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, pink); break;
-            case Dir::DOWN : mazeim.draw_line((x + 1) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, (x + 1) * CELL_SIZE - CELL_SIZE_2, (y + 2) * CELL_SIZE - CELL_SIZE_2, pink); break;
+            case Dir::LEFT : mazeim.draw_line((x + 1) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, (x    ) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, color); break;
+            case Dir::UP   : mazeim.draw_line((x + 1) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, (x + 1) * CELL_SIZE - CELL_SIZE_2, (y    ) * CELL_SIZE - CELL_SIZE_2, color); break;
+            case Dir::RIGHT: mazeim.draw_line((x + 1) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, (x + 2) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, color); break;
+            case Dir::DOWN : mazeim.draw_line((x + 1) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, (x + 1) * CELL_SIZE - CELL_SIZE_2, (y + 2) * CELL_SIZE - CELL_SIZE_2, color); break;
             case Dir::NONE : break;
         }
         cur.moveto(cells[cur.x][cur.y].parent);
     }
-    mazeim.draw_line(CELL_SIZE_2, CELL_SIZE_2, CELL_SIZE_2, 0, pink);
+    ++colorIdx;
+    setColor(colorIdx);
     mazeim.draw_line(w * CELL_SIZE - CELL_SIZE_2, h * CELL_SIZE - CELL_SIZE_2, w * CELL_SIZE - CELL_SIZE_2, (h + 1) * CELL_SIZE - CELL_SIZE_2, pink);
 
     oss.str("");
