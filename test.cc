@@ -2,6 +2,7 @@
 #include <time.h>
 #include <string>
 #include "maze2.hh"
+#include "draw.hh"
 
 int main(int argc, char* argv[]) noexcept {
     // srand(time(NULL));
@@ -18,6 +19,5 @@ int main(int argc, char* argv[]) noexcept {
     std::cout << "start" << std::endl;
     m.generate();
     std::cout << "done" << std::endl;
-    //m.print("Result");
-    //m.save_img("maze", false, 4);
+    draw(m.cells(), "ker", false, 6);
 }

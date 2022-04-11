@@ -2,3 +2,4 @@ build
 CMakeFiles
 compile_commands.json
 *.idx
+*.bmp

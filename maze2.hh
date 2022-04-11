@@ -3,41 +3,7 @@
 #include <iostream>
 #include <random>
 
-enum class CellState {
-    NONE, PATH, TREE
-};
-
-enum class Dir {
-    NONE, LEFT, UP, RIGHT, DOWN
-};
-
-struct Cell {
-    CellState state;
-    Dir parent;
-};
-
-std::ostream& operator<<(std::ostream& os, Dir d) {
-    switch(d) {
-    case Dir::NONE : return os << "NONE ";
-    case Dir::LEFT : return os << "LEFT ";
-    case Dir::UP   : return os << "UP   ";
-    case Dir::RIGHT: return os << "RIGHT";
-    case Dir::DOWN : return os << "DOWN ";
-    }
-}
-
-struct Point {
-    int64_t x;
-    int64_t y;
-    bool operator==(const Point& rhs) const {
-        return x == rhs.x && y == rhs.y;
-    }
-    friend std::ostream& operator<<(std::ostream& os, const Point& p);
-};
-
-std::ostream& operator<<(std::ostream& os, const Point& p) {
-    return os << "Point(" << p.x << ", " << p.y << ")";
-}
+#include "types.hh"
 
 class Maze {
 public:
@@ -256,6 +222,8 @@ public:
     std::uniform_int_distribution<>::result_type randDir() {
         return dirDist_(gen_);
     }
+    
+    const Cells& cells() const { return a; }
 
 private:
     int64_t w_;
