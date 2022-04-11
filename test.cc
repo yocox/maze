@@ -19,5 +19,5 @@ int main(int argc, char* argv[]) noexcept {
     std::cout << "start" << std::endl;
     m.generate();
     std::cout << "done" << std::endl;
-    draw(m.cells(), "ker", false, 6);
+    draw(m.cells(), "ker", true, 4);
 }

@@ -50,18 +50,19 @@ void draw(const Cells& cells, const std::string& filename, const bool write_solu
     canvas.draw_image(CELL_SIZE * 2, CELL_SIZE * 2, mazeim);
     canvas.save(oss.str().c_str());
 
+    // If no need to write solution, return
     if(!write_solution)
         return;
 
-    Point cur{w, h};
-    while(cur.x != 1 || cur.y != 1) {
+    Point cur{w - 1, h - 1};
+    while(cur.x != 0 || cur.y != 0) {
         int x = cur.x;
         int y = cur.y;
         switch(cells[cur.x][cur.y].parent) {
-            case Dir::LEFT : mazeim.draw_line(x * CELL_SIZE - CELL_SIZE_2, y * CELL_SIZE - CELL_SIZE_2, (x - 1) * CELL_SIZE - CELL_SIZE_2, y       * CELL_SIZE - CELL_SIZE_2, pink); break;
-            case Dir::UP   : mazeim.draw_line(x * CELL_SIZE - CELL_SIZE_2, y * CELL_SIZE - CELL_SIZE_2, x       * CELL_SIZE - CELL_SIZE_2, (y - 1) * CELL_SIZE - CELL_SIZE_2, pink); break;
-            case Dir::RIGHT: mazeim.draw_line(x * CELL_SIZE - CELL_SIZE_2, y * CELL_SIZE - CELL_SIZE_2, (x + 1) * CELL_SIZE - CELL_SIZE_2, y       * CELL_SIZE - CELL_SIZE_2, pink); break;
-            case Dir::DOWN : mazeim.draw_line(x * CELL_SIZE - CELL_SIZE_2, y * CELL_SIZE - CELL_SIZE_2, x       * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, pink); break;
+            case Dir::LEFT : mazeim.draw_line((x + 1) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, (x    ) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, pink); break;
+            case Dir::UP   : mazeim.draw_line((x + 1) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, (x + 1) * CELL_SIZE - CELL_SIZE_2, (y    ) * CELL_SIZE - CELL_SIZE_2, pink); break;
+            case Dir::RIGHT: mazeim.draw_line((x + 1) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, (x + 2) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, pink); break;
+            case Dir::DOWN : mazeim.draw_line((x + 1) * CELL_SIZE - CELL_SIZE_2, (y + 1) * CELL_SIZE - CELL_SIZE_2, (x + 1) * CELL_SIZE - CELL_SIZE_2, (y + 2) * CELL_SIZE - CELL_SIZE_2, pink); break;
             case Dir::NONE : break;
         }
         cur.moveto(cells[cur.x][cur.y].parent);
@@ -70,9 +71,8 @@ void draw(const Cells& cells, const std::string& filename, const bool write_solu
     mazeim.draw_line(w * CELL_SIZE - CELL_SIZE_2, h * CELL_SIZE - CELL_SIZE_2, w * CELL_SIZE - CELL_SIZE_2, (h + 1) * CELL_SIZE - CELL_SIZE_2, pink);
 
     oss.str("");
-    oss << filename << "_" << w << "x" << h << "_solution.png";
-    mazeim.save(oss.str().c_str());
-    
-    
-
+    oss << filename << "_" << w << "x" << h << "_solution.bmp";
+    canvas.fill(white[0]);
+    canvas.draw_image(CELL_SIZE * 2, CELL_SIZE * 2, mazeim);
+    canvas.save(oss.str().c_str());
 }
